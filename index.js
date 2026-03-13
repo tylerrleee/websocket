@@ -4,6 +4,26 @@ const { join } = require('node:path');
 const { Server } = require('socket.io');
 const sqlite3 = require('sqlite3');
 const { open } = require('sqlite');
+const { availableParallelism } = require('node:os');
+const cluster = require('node:cluster');
+const { createAdapter, setupPrimary } = require('@socket.io/cluster-adapter');
+
+require('dotenv').config();
+const localPORT = parseInt(process.env.PORT, 10);
+
+if (cluster.isPrimary) {
+  const numCPUs = availableParallelism();
+  // create one worker per available core
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork({
+      PORT: localPORT + i
+    });
+  }
+  
+  // set up the adapter on the primary thread
+  return setupPrimary();
+}
+
 
 async function main(){
     // open database file
@@ -24,17 +44,44 @@ async function main(){
     const app = express();
     const server = createServer(app);
     const io = new Server(server, {
-        connectionStateRecovery: {}
+        connectionStateRecovery: {},
+        adapter: createAdapter() // Create a worker on each thread
     });
 
     // Static files
-    app.get('/', (req, res) => {
-        res.sendFile(join(__dirname, './public/index.html'));
-    });
+    app.use(express.static(join(__dirname, 'public')));
+
 
     // Make new connection w/ new user
     io.on('connection', async (socket) => {
-        socket.broadcast.emit('hi');
+        // When connected, assign an ID (e.g. UUID) -- including new users
+        socket.data.username = `User_${socket.id.substring(0, 5)}`;
+
+        // Announce that said user has joined | differentiate user msg and system msg
+        // socket.broadcast.emit('chat message', `${socket.data.username} connected!`);
+        socket.broadcast.emit('chat message', {
+                text: `${socket.data.username} connected!`,
+                type: 'system' // sent to frontend with label from backend
+            });
+
+        // Listen for new name
+        socket.on('set name', (customName) => {
+            const oldName = socket.data.username;
+            socket.data.username = customName;
+            socket.broadcast.emit('chat message', {
+                text: `${oldName} changed their name to ${customName}`,
+                type: 'system' 
+            });
+        });
+
+        socket.on('disconnect', () => {
+            // Broadcast a message to all OTHER connected users
+            socket.broadcast.emit('chat message', {
+                text: `${socket.data.username} has disconnected.`,
+                type: 'system' // sent to frontend with label from backend
+            });
+        });
+
         socket.on('chat message', async (msg, clientOffset, callback) => {
             let result;
             try {
@@ -47,7 +94,12 @@ async function main(){
                 } else{
                     // nothing, let client retry
                 }
+                const formattedMsg = `${socket.data.username}: ${msg}`;
+
+
                 // TODO Handle failure
+                io.emit('chat message', formattedMsg, result.lastID); 
+                callback();
                 return;
             }
             io.emit('chat message', msg, result.lastID);
@@ -71,9 +123,13 @@ async function main(){
     });
 
     // function(){} is the same as () => {}
-    server.listen(4000, () => {
-        console.log('server runnign at http://localhost:4000');
+
+    const port = process.env.PORT;
+
+    server.listen(port, () => {
+        console.log(`server running at http://localhost:${port}`);
     });
-}
+};
+
 
 main();
