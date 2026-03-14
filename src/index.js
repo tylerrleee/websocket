@@ -36,6 +36,12 @@ io.on('connection', async (socket) => {
         snap.forEach(doc => {
             socket.emit('chat', doc.data());
         });
+
+        const messages = [];
+        snap.forEach(doc => messages.push(doc.data())); // push snapshot to empty messages
+        messages.reverse();
+        messages.forEach(msg => socket.emit('chat', msg)); // for loop to display recent msg
+
     } catch(error){
         console.error('Error fetching most recent messages: ', error)
     }
