@@ -1,8 +1,8 @@
 // Make connection
-var socket = io.connect();
+const socket = io.connect();
 
 // Query DOM
-var message = document.getElementById('message'),
+const message = document.getElementById('message'),
       handle = document.getElementById('handle'),
       btn = document.getElementById('send'),
       output = document.getElementById('output'),
@@ -25,6 +25,10 @@ message.addEventListener('keypress', function(){
 socket.on('chat', function(data){
     feedback.innerHTML = '';
     output.innerHTML += '<p><strong>' + data.handle + ': </strong>' + data.message + '</p>';
+
+    const chat_window = document.getElementById('chat-window');
+    chat_window.scrollTop = chat_window.scrollHeight;
+
 });
 
 socket.on('typing', function(data){
