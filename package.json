@@ -4,17 +4,21 @@
   "description": "",
   "license": "ISC",
   "author": "",
-  "type": "commonjs",
-  "main": "index.js",
+  "type": "module",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "dev": "nodemon src/index.js",
+    "start": "node src/index,js"
   },
   "dependencies": {
+    "@tensorflow-models/toxicity": "^1.2.2",
+    "@tensorflow/tfjs": "^4.22.0",
     "codemon": "^0.1.31-development",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "firebase": "^12.10.0",
     "socket.io": "^4.8.3",
     "sqlite": "^5.1.1",
     "sqlite3": "^6.0.1"
