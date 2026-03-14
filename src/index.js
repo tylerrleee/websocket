@@ -25,7 +25,7 @@ const io = new Server(server);
 io.on('connection', async (socket) => {
     console.log('made socket connection', socket.id);
 
-    // Connected -> Fetch and Emit 10 most recent messages 
+    // Connected -> Query Collection -> Emit 10 most recent messages 
     try {
         const get_query = query(
             collection(db, 'messages'),
@@ -33,10 +33,6 @@ io.on('connection', async (socket) => {
             limit(10)
         );
         const snap = await getDocs(get_query);
-        snap.forEach(doc => {
-            socket.emit('chat', doc.data());
-        });
-
         const messages = [];
         snap.forEach(doc => messages.push(doc.data())); // push snapshot to empty messages
         messages.reverse();
@@ -67,11 +63,12 @@ io.on('connection', async (socket) => {
             } catch (error) {
                 console.error('Error saving messages to Firestore Collection: ', error);        
             }
-
+            data.timestamp = { seconds: Date.now() / 1000}
             io.sockets.emit('chat', data);
         }
     });
 
+    // Show typing
     socket.on('typing', function(data){
         socket.broadcast.emit('typing', data);
     });

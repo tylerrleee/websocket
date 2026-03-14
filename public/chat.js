@@ -24,8 +24,25 @@ message.addEventListener('keypress', function(){
 // Listen for events
 socket.on('chat', function(data){
     feedback.innerHTML = '';
-    output.innerHTML += '<p><strong>' + data.handle + ': </strong>' + data.message + '</p>';
 
+    const my_handle = handle.value;
+    const is_mine   = data.handle == my_handle;
+
+    // format timestmap
+    const time = data.timestamp 
+        ? new Date(data.timestamp.seconds * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        : new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+
+
+    output.innerHTML += `
+    <div class="msg-wrapper ${is_mine ? 'mine' : 'theirs'}">
+        <strong class="handle">${data.handle}</strong>
+        <p class="${is_mine ? 'mine' : 'theirs'}">
+            ${data.message}
+            <span class="timestamp">${time}</span>
+        </p>
+    </div>`;
     const chat_window = document.getElementById('chat-window');
     chat_window.scrollTop = chat_window.scrollHeight;
 
