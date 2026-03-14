@@ -8,18 +8,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-<<<<<<< HEAD
     "dev": "nodemon index.js"
   },
   "dependencies": {
     "codemon": "^0.1.31-development",
     "cors": "^2.8.6",
-=======
-    "dev": "node index.js"
-  },
-  "dependencies": {
-    "@socket.io/cluster-adapter": "^0.3.0",
->>>>>>> abe7c1c265318c7f541af884a8d71c415013be64
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "socket.io": "^4.8.3",
