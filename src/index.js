@@ -21,7 +21,11 @@ app.use(express.static('public')); // access frontend
 
 
 // Socket setup & pass server
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: '*'
+    }
+});
 io.on('connection', async (socket) => {
     console.log('made socket connection', socket.id);
 
