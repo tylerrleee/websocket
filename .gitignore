@@ -1,4 +1,7 @@
 node_modules
 chat.db
 .env
+<<<<<<< HEAD
 .DS_Store
+=======
+>>>>>>> abe7c1c265318c7f541af884a8d71c415013be64
