@@ -29,7 +29,7 @@ h1{
     background: #fdf7e8;
 }
 
-/* MESSAGE WRAPPERS */
+/* message wrap -- align items */
 .msg-wrapper {
     clear: both;
     margin: 5px 20px;
@@ -48,7 +48,7 @@ h1{
     align-items: flex-start; 
 }
 
-/* MESSAGE BUBBLES */
+/* message bubbles -- positioning*/
 #output p {
     padding: 10px 14px;
     color: #555;
@@ -62,7 +62,6 @@ h1{
 #output p.mine {
     background: #679860;
     color: #fff;
-    font-size: 80%;
     align-items: flex-end;   /* right side bubble */
 }
 
