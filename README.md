@@ -1,5 +1,6 @@
 # Websocket practice
 
+<img src="./public/whatschat.jpg" alt="Postert" width="850">
 
 
 - [socket.io Documentation](https://socket.io/docs/v4/tutorial/introduction)

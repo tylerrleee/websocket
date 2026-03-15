@@ -28,10 +28,10 @@ socket.on('chat', function(data){
     const my_handle = handle.value;
     const is_mine   = data.handle == my_handle;
 
-    // format timestmap
+    // format timestmap 
     const time = data.timestamp 
-        ? new Date(data.timestamp.seconds * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        : new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        ? new Date(data.timestamp.seconds * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) // if
+        : new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // else
 
 
 

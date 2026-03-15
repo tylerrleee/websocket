@@ -13,7 +13,7 @@ toxicity.load(threshold).then(model => {
 
 export async function isToxic(message) {
     if (!toxicityModel) {
-        console.warn('Toxicity model not yet loaded — allowing message through.');
+        console.warn('Toxicity model not yet loaded - allowing message through.');
         return false;
     }
 
